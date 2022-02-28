@@ -1,0 +1,15 @@
+---
+
+- name: restart ssh
+  service:
+    name: ssh
+    state: restarted
+
+- name: restart ntpd
+  service:
+    name: ntp
+    state: restarted
+    enabled: true
+
+# - name: reload sysctl
+#   command: /sbin/sysctl -p /etc/sysctl.d/99-sele-rules.conf

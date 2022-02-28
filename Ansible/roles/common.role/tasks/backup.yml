@@ -1,0 +1,14 @@
+--- 
+
+- name: Copy deb file on server
+  copy:
+    src: omnibus-backup_4.2.3_amd64.deb
+    dest: /root/omnibus-backup_4.2.3_amd64.deb
+
+- name: install deb packages
+  apt: deb=/root/omnibus-backup_4.2.3_amd64.deb
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Create symlink for backup app
+  file: src=/opt/omnibus-backup/bin/backup dest=/bin/backup state=link
+  ignore_errors: "{{ ansible_check_mode }}"

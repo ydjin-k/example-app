@@ -1,0 +1,16 @@
+#{{ ansible_managed }}
+/var/log/iptables.log {
+        su root
+        daily
+        missingok
+        rotate 4
+        compress
+        delaycompress
+        size 50M
+        notifempty
+        create 640 syslog adm
+        sharedscripts
+        postrotate
+        service rsyslog rotate > /dev/null
+        endscript
+}

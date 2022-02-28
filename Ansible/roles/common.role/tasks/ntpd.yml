@@ -1,0 +1,13 @@
+--- 
+
+- name: set timezone to Europe/Moscow
+  timezone:
+    name: Europe/Moscow
+
+- name: Configure ntpd daemon
+  copy:
+    src: ntp.conf
+    dest: /etc/ntp.conf
+    backup: yes
+  notify:
+    - restart ntpd

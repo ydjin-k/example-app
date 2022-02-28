@@ -1,0 +1,83 @@
+---
+
+- name: fix perm for home dir
+  lineinfile: dest=/etc/adduser.conf regexp="^DIR_MODE=0755" line="DIR_MODE=0750" backrefs=yes
+  tags: fix_perm_home
+
+# Add repo with ci packages
+- include: "ci_packages.yml"
+  when: common_add_ci_deb_repos
+
+- name: Install packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 180
+  loop: "{{ apt_packages }}"
+
+- name: Install user packages
+  apt:
+    name: "{{ item }}"
+    update_cache: yes
+    cache_valid_time: 180
+  when: apt_users_packages is defined and apt_users_packages|length > 0
+  loop: "{{ apt_users_packages }}"
+  tags:
+    - install_packages
+
+- include: "pip-packages.yml"
+  when: pip_users_packages|length > 0
+
+# Create/delete system users
+- include: "system_users.yml"
+  loop: "{{ users_admins }}"
+  tags: 
+    - users
+
+# Install SSH pacakges
+- include: "ssh.yml"
+  tags:
+    - users
+
+# Update sudoers file
+- include: "sudoers.yml"
+  loop: "{{ users_admins }}"
+  tags: 
+    - users
+
+# Fix Locale
+- include: "locale.yml"
+
+# Configure ntp
+- include: "ntpd.yml"
+
+# Set Hostname
+- include: "hostname.yml"
+
+# add unattended-upgrades
+- include: "unattended-upgrades.yml"
+
+# configure bash history env
+- include: "bash_history.yml"
+
+# configure vim for Fuadeg
+- include: "vimrc.yml"
+  when: vimrc is defined and vimrc
+
+# configure sysctl
+- include: "sysctl.yml"
+  when: sysctl_rules is defined
+
+# install omnibus-backup_4.2.3_amd64.deb
+- include: "backup.yml"
+  when: backup_install is defined and backup_install == True
+
+# install rkhunter
+- include: "rkhunter.yml"
+  when: rkhunter is defined and rkhunter
+
+# add rule for graylog
+- include: "graylog.yml"
+  when: add_to_graylog is defined and add_to_graylog == True
+
+- meta: flush_handlers

@@ -1,0 +1,30 @@
+---
+
+- name: restart ssh
+  service:
+    name: ssh
+    state: restarted
+
+- name: reload sysctl
+  shell: systemctl stop ntp && ntpdate -s ntp.selectel.ru && systemctl start ntp
+  listen: "restart ntpd"
+
+- name: restart ntpd
+  service:
+    name: ntp
+    state: restarted
+    enabled: yes
+  listen: "restart ntpd"
+
+- name: reload sysctl config
+  command: /sbin/sysctl -p /etc/sysctl.d/99-sele-rules.conf
+
+- name: restart rsyslog
+  service:
+    name: rsyslog
+    state: restarted
+
+- name: restart filebeat
+  service:
+    name: filebeat
+    state: restarted

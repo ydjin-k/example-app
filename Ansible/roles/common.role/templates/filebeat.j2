@@ -1,0 +1,12 @@
+filebeat.inputs:
+- type: log
+  enabled: true
+  paths:
+{% if filebeat_paths is defined %}
+{% for path in filebeat_paths %}
+    - {{ path }}
+{% endfor %}
+{% endif %}
+
+output.logstash:
+        hosts:  {{ graylog_ip }}:{{ graylog_port_filebeat }}

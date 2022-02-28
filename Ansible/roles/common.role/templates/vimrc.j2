@@ -1,0 +1,6 @@
+{% if vimrc is defined %}
+{% for rule in vimrc %}
+{{ (rule.keys() | list)[0] }} {{ rule[(rule.keys() | list)[0]] }}
+{% endfor %}
+{% endif %}
+

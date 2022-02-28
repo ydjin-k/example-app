@@ -1,0 +1,66 @@
+---
+- name: Populate service facts
+  service_facts:
+
+- name: Disable ufw
+  service:
+    name: ufw
+    state: stopped
+    enabled: no
+  when: "'ufw' in services"
+
+- name: Install iptables-persistent Ubuntu
+  apt:
+    name: "iptables-persistent"
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Install iptables-persistent Centos
+  yum:
+    name: "iptables-services"
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+#Log iptables, rotation
+- include: "logs_fw.yml"
+
+- name: Copy iptables template rules over to /etc/iptables
+  template:
+    src: iptables.conf.j2
+    dest: /etc/iptables/rules.v4
+  notify:
+    - Restart iptables-persistent
+  tags:
+    - iptables_conf
+  register: conf_change
+  when: ansible_os_family == 'Debian'
+
+- name: Copy iptables template rules over to /etc/iptables
+  template:
+    src: iptables.conf.j2
+    dest: /etc/sysconfig/iptables
+    mode: 0600
+  notify:
+    - Restart iptables
+  tags:
+    - iptables_conf
+  register: conf_change
+  when: ansible_os_family == 'RedHat'
+
+- meta: flush_handlers
+
+- name: restart fail 2 ban
+  shell: if [ -e /usr/bin/fail2ban-server ]; then service fail2ban restart; else echo "not install"; fi
+  changed_when: false
+  when: conf_change.changed
+  tags:
+    - iptables_conf
+
+- name: Change perm for conf Dir /etc/iptables
+  file:
+    path: /etc/iptables
+    state: directory
+    mode: 0750
+    owner: root
+    group: root
+  when: ansible_os_family == 'Debian'

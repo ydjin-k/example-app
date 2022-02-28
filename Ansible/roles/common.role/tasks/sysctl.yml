@@ -1,0 +1,10 @@
+---
+- name: Install sysctl rules
+  template:
+    src: 99-sele-rules.conf.j2
+    dest: /etc/sysctl.d/99-sele-rules.conf
+  notify:
+    - reload sysctl
+    - reload sysctl config
+  tags:
+    - sysctl_config

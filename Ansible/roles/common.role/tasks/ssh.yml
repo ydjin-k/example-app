@@ -1,0 +1,62 @@
+---
+
+- name: Create sftp group for chroot
+  group:
+    name: sftp-users
+    state: present
+
+
+
+- name: Set SSH password login permission
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: '^\s*PasswordAuthentication'
+    line: "PasswordAuthentication {{ users_ssh_allow_password_auth }}"
+  when: users_ssh_allow_password_auth is defined and users_ssh_allow_password_auth
+  notify: restart ssh
+
+- name: Set SSH root password login permission
+  lineinfile:
+    dest: "/etc/ssh/sshd_config"
+    regexp: '^\s*PermitRootLogin'
+    line: "PermitRootLogin {{ users_ssh_allow_root_login }}"
+  when: users_ssh_allow_root_login is defined and users_ssh_allow_root_login
+  notify: restart ssh
+
+- name: Set some kernel parameters
+  lineinfile:
+    dest: /etc/ssh/sshd_config
+    line: "{{ item }}"
+  loop:
+    - "Match Group sftp-users"
+    - "        ChrootDirectory /var/www"
+    - "        AllowTCPForwarding no"
+    - "        X11Forwarding no"
+    - "        ForceCommand internal-sftp"
+  notify: restart ssh
+
+
+
+- name: Add/remove ssh pub keys for admin users
+  when: users_admins is defined and users_admins and item.0.state == "present" and not users_root_keys
+  with_subelements:
+    - "{{ users_admins }}"
+    - keys
+  authorized_key:
+    manage_dir: yes
+    user: "{{ item.0.username }}"
+    key: "{{ item.1.key }}"
+    state: "{{ item.1.state }}"
+
+- name: Add/remove admins ssh keys to root user
+  when: users_admins is defined and users_admins and item.0.state == "present" and users_root_keys
+  with_subelements:
+    - "{{ users_admins }}"
+    - keys
+  authorized_key:
+    manage_dir: yes
+    user: "root"
+    key: "{{ item.1.key }}"
+    state: "{{ item.1.state }}"
+
+

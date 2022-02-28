@@ -1,0 +1,39 @@
+- name: rkhunter | install
+  apt: pkg=rkhunter state=latest update_cache=yes
+  tags: rkhunter
+
+
+- name: rkhunter | configure
+  replace: dest=/etc/rkhunter.conf regexp="{{ item.regexp }}" replace="{{ item.replace }}"
+  loop:
+    - { regexp: "^#ALLOW_SSH_ROOT_USER=.*$", replace: "ALLOW_SSH_ROOT_USER={{ users_ssh_allow_root_login }}" }
+    - { regexp: "^#ALLOWHIDDENDIR=/etc/.java$", replace: ALLOWHIDDENDIR=/etc/.java }
+  tags: rkhunter
+  register: change_conf
+
+- name: rkhunter | update
+  shell: /usr/bin/rkhunter --update&
+  tags: rkhunter
+  changed_when: false
+
+- name: Run rkhunter --propupd , only when change
+  shell: rkhunter --propupd
+  when: change_conf.changed
+  tags: rkhunter
+
+- name: rkhunter | configure cron
+  lineinfile: dest=/etc/default/rkhunter regexp="^CRON_DAILY_RUN" line='CRON_DAILY_RUN="yes"'
+  tags: rkhunter
+
+- name: rkhunter | config email
+  lineinfile: dest=/etc/default/rkhunter regexp="^REPORT_EMAIL.*$" line='REPORT_EMAIL="managed-sec@selectel.ru"'
+  tags: rkhunter
+
+
+- name: rkhunter | configure update
+  lineinfile: dest=/etc/default/rkhunter regexp="^CRON_DB_UPDATE" line='CRON_DB_UPDATE="yes"'
+  tags: rkhunter
+
+- name: Change permission on config file
+  file: dest=/etc/rkhunter.conf mode=0640
+  tags: rkhunter

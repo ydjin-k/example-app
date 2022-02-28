@@ -1,0 +1,13 @@
+---
+
+- name: Add CI packages repo key
+  apt_key:
+    url: "{{ common_host_has_graynet | ternary('http://deb.ci.selectel.org/serverkey.gpg','http://packages.ci.selectel.org/serverkey.gpg') }}"
+    state: present
+
+- name: Add CI packages repo
+  apt_repository:
+    #repo: "deb http://packages.ci.selectel.org/ trusty main"
+    repo: "{{ common_host_has_graynet | ternary('deb http://deb.ci.selectel.org/ trusty main','deb http://packages.ci.selectel.org/ trusty main') }}"
+    state: present
+    update_cache: yes

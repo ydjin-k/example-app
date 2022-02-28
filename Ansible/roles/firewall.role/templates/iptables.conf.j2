@@ -1,0 +1,175 @@
+# Ansible managed 
+#-j LOG --log-prefix "Firewall: "
+###################################
+
+*mangle
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:FORWARD ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+:bad_ping - [0:0]
+:port_scan - [0:0]
+
+###Anti DDos. Трафик специально обрабатываю в mangle prerouting НЕ НАДО МЕНЯТЬ! 
+###
+
+{% if firewall_synflood_ping_scan_protect is defined and firewall_synflood_ping_scan_protect %}
+
+###No comment
+-A PREROUTING -i {{ firewall_external_network_interface }} -m conntrack --ctstate INVALID -j DROP
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp ! --syn -m conntrack --ctstate NEW -j DROP
+
+-A PREROUTING -i {{ firewall_external_network_interface }} -p icmp --icmp-type echo-request -j bad_ping
+
+###Все icmp отправляем на проверку, если шлет слишком часто то отбрасываем все что не влезло в наши рамки. (пропускаем 1 запрос в 1 секунду)
+#От безумного пингования. Заход в цепочку специально выставил впереди!!!! Не перемещать иначе логика будет нарушена!
+-A bad_ping -p icmp --icmp-type echo-request -m limit --limit 1/s -j RETURN
+###Вносим в лог таких товарищей.
+-A bad_ping -p icmp --icmp-type echo-request --j LOG --log-level info --log-prefix "Firewall: "
+-A bad_ping -p icmp --icmp-type echo-request -j DROP
+
+##Боремся с RST
+-A INPUT -p tcp --tcp-flags RST RST -m limit --limit 2/s --limit-burst 2 -j RETURN 
+-A INPUT -p tcp --tcp-flags RST RST -j DROP
+
+
+#Очень важное правило!
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp -m conntrack --ctstate NEW -m tcpmss ! --mss 536:65535 -j DROP
+
+#Боремся с невалидными пакетами. Находится в прероутинге мангла, так и задумано! В INPUT НЕ ПЕРЕНОСИТЬ!
+
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags FIN,SYN,RST,PSH,ACK,URG NONE -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags FIN,SYN FIN,SYN -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags SYN,RST SYN,RST -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags FIN,RST FIN,RST -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags FIN,ACK FIN -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags ACK,URG URG -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags ACK,FIN FIN -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags ACK,PSH PSH -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags ALL ALL -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags ALL NONE -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags ALL FIN,PSH,URG -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags ALL SYN,FIN,PSH,URG -j DROP 
+-A PREROUTING -i {{ firewall_external_network_interface }} -p tcp --tcp-flags ALL SYN,RST,ACK,FIN,URG -j DROP
+
+
+
+
+#Фрагментированные пакеты
+-A PREROUTING -i {{ firewall_external_network_interface }} -f -j DROP
+{% endif %}
+COMMIT
+
+
+
+*nat
+:PREROUTING ACCEPT [0:0]
+:INPUT ACCEPT [0:0]
+:OUTPUT ACCEPT [0:0]
+:POSTROUTING ACCEPT [0:0]
+COMMIT
+
+*filter
+:INPUT ACCEPT [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT ACCEPT [0:0]
+:syn_flood - [0:0]
+
+###No comment
+-A INPUT -i lo -j ACCEPT
+
+
+###Белый лист для IP/32
+{% if firewall_main_ip_acl is defined %}
+{% for ip in firewall_main_ip_acl %}
+-A INPUT -s {{ ip }}/32 -j ACCEPT
+{% endfor %}
+{% endif %}
+
+#Белый лист для сетей
+{% if firewall_net_acl is defined %}
+{% for net in firewall_net_acl %}
+-A INPUT -s {{ net }} -j ACCEPT
+{% endfor %}
+{% endif %}
+
+###Белый лист для IP/32 - задаваемые в group_vars
+{% if firewall_ip_acl is defined %}
+{% for ip in firewall_ip_acl %}
+-A INPUT -s {{ ip }}/32 -j ACCEPT
+{% endfor %}
+{% endif %}
+
+#Бан лист для сетей
+{% if firewall_net_blacklist is defined %}
+{% for net_blacklist in firewall_net_blacklist %}
+-A INPUT -s {{ net_blacklist }} -j DROP
+{% endfor %}
+{% endif %}
+
+###Бан лист для IP/32 - задаваемые в group_vars
+{% if firewall_ip_blacklist is defined %}
+{% for ip_blacklist in firewall_ip_blacklist %}
+-A INPUT -s {{ ip_blacklist }}/32 -j DROP
+{% endfor %}
+{% endif %}
+
+###No comment
+-A INPUT -i {{ firewall_external_network_interface }} -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+#Боремся со спуфингом
+-A INPUT -i {{ firewall_external_network_interface }} -s 224.0.0.0/3 -j DROP 
+-A INPUT -i {{ firewall_external_network_interface }} -s 169.254.0.0/16 -j DROP 
+-A INPUT -i {{ firewall_external_network_interface }} -s 172.16.0.0/12 -j DROP 
+-A INPUT -i {{ firewall_external_network_interface }} -s 192.0.2.0/24 -j DROP 
+-A INPUT -i {{ firewall_external_network_interface }} -s 192.168.0.0/16 -j DROP 
+-A INPUT -i {{ firewall_external_network_interface }} -s 10.0.0.0/8 -j DROP 
+-A INPUT -i {{ firewall_external_network_interface }} -s 0.0.0.0/8 -j DROP 
+-A INPUT -i {{ firewall_external_network_interface }} -s 240.0.0.0/5 -j DROP 
+-A INPUT -s 127.0.0.0/8 ! -i lo -j DROP
+
+
+#Если кто то прорвался, через прероутинг, то пытаемся зарезать количеством одновременных соединений.
+#Блочим всех у кого больше 80 соединений. К сожалению, тут не угадать. Специально вынес эту переменную.
+
+{% if firewall_synflood_ping_scan_protect is defined and firewall_synflood_ping_scan_protect %}
+-A INPUT -i {{ firewall_external_network_interface }} -p tcp --syn -j syn_flood
+-A syn_flood -p tcp -m connlimit --connlimit-above {{ establ_connect_from_host }} -j REJECT --reject-with tcp-reset
+-A syn_flood -p tcp -m conntrack --ctstate NEW -m limit --limit {{ limit_per_sec }}/s --limit-burst {{ limit_burst  }} -j RETURN 
+-A syn_flood -p tcp -m conntrack --ctstate NEW -j DROP
+{% endif %}
+
+#разрешаем только определенные типы icmp
+-A INPUT -i {{ firewall_external_network_interface }} -p icmp -m icmp --icmp-type 3 -j ACCEPT
+-A INPUT -i {{ firewall_external_network_interface }} -p icmp -m icmp --icmp-type 8 -j ACCEPT
+-A INPUT -i {{ firewall_external_network_interface }} -p icmp -m icmp --icmp-type 12 -j ACCEPT
+
+#Разрешаем доступ к нашим сервисам.
+
+#TCP
+{% if firewall_enabled_input_tcp_ports is defined %}
+{% for tcp_port in firewall_enabled_input_tcp_ports %}
+-A INPUT -i {{ firewall_external_network_interface }} -p tcp --dport {{ tcp_port }}  -j ACCEPT
+{% endfor %}
+{% endif %}
+
+#TCP mport
+{% if firewall_enabled_input_multi_tcp_ports is defined %}
+{% for tcp_port in firewall_enabled_input_multi_tcp_ports %}
+-A INPUT -i {{ firewall_external_network_interface }} -p tcp -m multiport --dport {{ tcp_port }} -j ACCEPT
+{% endfor %}
+{% endif %}
+
+
+#UDP
+{% if firewall_enabled_input_udp_ports is defined %}
+{% for udp_port in firewall_enabled_input_udp_ports %}
+-A INPUT -i {{ firewall_external_network_interface }} -p udp --dport {{ udp_port }}  -j ACCEPT
+{% endfor %}
+{% endif %}
+
+
+-A INPUT -i {{ firewall_external_network_interface }} -j DROP
+
+COMMIT

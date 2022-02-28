@@ -1,0 +1,26 @@
+---
+
+- name: Restart iptables-persistent
+  service:
+    name: "netfilter-persistent"
+    state: restarted
+    enabled: yes
+
+# centos handler
+- name: Restart iptables
+  service:
+    name: "iptables"
+    state: restarted
+    enabled: yes
+  when: ansible_os_family == 'RedHat'
+
+- name: Restart rsyslog
+  service:
+    name: "rsyslog"
+    state: restarted
+
+- name: Restart Fail2ban
+  service:
+    name: fail2ban
+    state: restarted
+

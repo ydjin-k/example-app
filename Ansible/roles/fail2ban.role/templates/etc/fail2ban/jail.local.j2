@@ -1,0 +1,23 @@
+# This file is managed by ansible.
+
+[DEFAULT]
+{% if fail2ban_whitelist is defined and fail2ban_whitelist %}
+ignoreip = {{ fail2ban_whitelist|join(' ') }}
+{% endif %}
+
+{% if fail2ban_services is defined and fail2ban_services %}
+{% for service in fail2ban_services %}
+{% if service.comment is defined and service.comment %}
+# {{ service.comment }}
+{% endif %}
+[{{ service.name }}]
+
+enabled = {{ service.enabled|default(False) }}
+port = {{ service.port }}
+filter = {{ service.filter }}
+logpath = {{ service.logpath }}
+maxretry = {{ service.maxretry|default(6) }}
+banaction = {{ service.banaction|default('iptables-multiport') }}
+
+{% endfor %}
+{% endif %}

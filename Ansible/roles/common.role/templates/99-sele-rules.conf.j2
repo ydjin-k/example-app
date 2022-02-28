@@ -1,0 +1,12 @@
+#
+# Selectel rules managed by selectel.common role
+#
+{% for rule in sysctl_rules %}
+{% if rule.name == "net.ipv4.tcp_tw_recycle" %}
+{% if ansible_kernel[:4] is version_compare('4.12', '<') %}
+{{ rule.name }}={{ rule.value }}
+{% endif %}
+{% else %}
+{{ rule.name }}={{ rule.value }}
+{% endif %}
+{% endfor %}

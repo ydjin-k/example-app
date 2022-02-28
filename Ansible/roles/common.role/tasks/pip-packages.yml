@@ -1,0 +1,17 @@
+---
+
+- name: Install pip ans setuptools
+  apt:
+    name: "{{ item }}"
+    state: present
+    cache_valid_time: 180
+    update_cache: yes
+  loop:
+    - python-pip
+    - python-setuptools
+    - python-virtualenv
+
+- name: Install python users packages
+  pip:
+    name: "{{ item }}"
+  loop: "{{ pip_users_packages }}"

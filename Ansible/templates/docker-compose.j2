@@ -1,0 +1,40 @@
+version: '3'
+
+services: 
+
+    app:
+      image: {{ app_image }}
+      restart: always
+      networks:
+      - docker-network
+  
+    load-balancer:
+      container_name: nginx-balance
+      image: nginx:mainline
+      restart: always
+      ports:
+        - 80:80
+        - 443:443
+      networks:
+        - docker-network
+      volumes:
+        - conf.d:/etc/nginx/conf.d
+        - certs:/etc/nginx/ssl
+
+volumes:
+  conf.d:
+    driver_opts:
+      type: none
+      device: /opt/docker/volumes/nginx/conf.d
+      o: bind
+  certs:
+    driver_opts:
+      type: none
+      device: /opt/docker/volumes/nginx/certs
+      o: bind
+
+networks:
+  docker-network:
+    driver: bridge
+
+

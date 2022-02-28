@@ -1,0 +1,86 @@
+---
+
+- name: ubuntu
+  block:
+    - name: Add/remove {{ item.username }} without a password
+      when:
+        - users_admins is defined
+        - users_admins is iterable
+        - not users_root_keys
+        - item.password is not defined
+      user:
+        name: "{{ item.username }}"
+        state: "{{ item.state }}"
+        force: true
+        remove: true
+        system: false
+        createhome: true
+        groups: "adm,sudo"
+        append: true
+        shell: /bin/bash
+
+    - name: Add/remove {{ item.username }} with a password
+      when:
+        - users_admins is defined
+        - users_admins is iterable
+        - not users_root_keys
+        - item.password is defined
+      user:
+        name: "{{ item.username }}"
+        state: "{{ item.state }}"
+        password: "{{ item.password }}"
+        force: true
+        remove: true
+        system: false
+        createhome: true
+        groups: "adm,sudo"
+        append: true
+        shell: /bin/bash
+  when: ansible_os_family == 'Debian'
+
+- name: centos
+  block:
+    - name: Add/remove {{ item.username }} without a password
+      when:
+        - users_admins is defined
+        - users_admins is iterable
+        - not users_root_keys
+        - item.password is not defined
+      user:
+        name: "{{ item.username }}"
+        state: "{{ item.state }}"
+        force: true
+        remove: true
+        system: false
+        createhome: true
+        groups: "adm,wheel"
+        append: true
+        shell: /bin/bash
+
+    - name: Add/remove {{ item.username }} with a password
+      when:
+        - users_admins is defined
+        - users_admins is iterable
+        - not users_root_keys
+        - item.password is defined
+      user:
+        name: "{{ item.username }}"
+        state: "{{ item.state }}"
+        password: "{{ item.password }}"
+        force: true
+        remove: true
+        system: false
+        createhome: true
+        groups: "adm,wheel"
+        append: true
+        shell: /bin/bash
+  when: ansible_os_family == 'RedHat'
+
+- name: Fix perm. for homedir {{ item.username }}
+  when:
+    - item.state == "present"
+    - not users_root_keys
+  file:
+    path: /home/{{ item.username }}
+    state: directory
+    mode: 0750

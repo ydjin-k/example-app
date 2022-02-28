@@ -1,0 +1,31 @@
+###### common.role ######
+backup_install: false
+
+app_image: ydjink/apptest:v1
+
+common_do_not_set_hostname_as_inventory: True
+
+users_admins:
+  - username: root
+    state: present
+    keys:
+      - state: present
+        # ~/.ssh/test_servers
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCr0Qz59LO6E/NFdR/oOFK45ZJFIQxCJgkeebQa0imZTRX1ZgU7mLfSB1SsNhoR0It3Bmk5bdf0wV7VWyMV3w0qCA9TP9UYqg6WFHW6esCl7AJahGsB9/1BL2ei9YqWFjjEXGsE0Pg8q/CS6gjMhRANB2PrB3ESajGcKA+prLQK+CuHIWSrlK2lguW+DiE1EKUxNKgF852qUBhxgVBjq5xW4GaA4a2qx7qMe03uvaUi508BABbpMBJk2UUx4/1M9U3vcZmYiwMnfMHVoRbUsarpXksrIZ8dAL7lggfZ1S2JocMhvkO7XujULB9WSWY/TvCPYkzaaoGDP324rkiw9yw90PAOwGUPyzXYIdQfhTcSqdH2fVPT6UjgZsPgS9YRMrD+ZrsulX0Wbe9ApBqzv5dzoCHy5/sadukE19F3irzRdlReKn+TuciRKKPDXOwFJ1o0ymcExvzxA2i0tsJexCONHSWmstlXmyu7RYdiwQpVzOeNuFr3OiMNzJB5fvDX+4tqagBI+uQhOJ2Sx6usHrAk3xsF9g6D+R+BWmT4hFeObfeTaQlza3JA9bPNux5CIpxm/RDCeZmmtU6k4LWuArtJvFg9otVpOlUXqCjLlV0VvE4bVUkPOp5BcByFERtw9+3WTydygZMn+UE/2e3lox0oT8cGBsbkpCR4TITTOJFvew== evgeniy@Evgeniy"
+      - state: present
+        # ~/.ssh/test_servers
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCr0Qz59LO6E/NFdR/oOFK45ZJFIQxCJgkeebQa0imZTRX1ZgU7mLfSB1SsNhoR0It3Bmk5bdf0wV7VWyMV3w0qCA9TP9UYqg6WFHW6esCl7AJahGsB9/1BL2ei9YqWFjjEXGsE0Pg8q/CS6gjMhRANB2PrB3ESajGcKA+prLQK+CuHIWSrlK2lguW+DiE1EKUxNKgF852qUBhxgVBjq5xW4GaA4a2qx7qMe03uvaUi508BABbpMBJk2UUx4/1M9U3vcZmYiwMnfMHVoRbUsarpXksrIZ8dAL7lggfZ1S2JocMhvkO7XujULB9WSWY/TvCPYkzaaoGDP324rkiw9yw90PAOwGUPyzXYIdQfhTcSqdH2fVPT6UjgZsPgS9YRMrD+ZrsulX0Wbe9ApBqzv5dzoCHy5/sadukE19F3irzRdlReKn+TuciRKKPDXOwFJ1o0ymcExvzxA2i0tsJexCONHSWmstlXmyu7RYdiwQpVzOeNuFr3OiMNzJB5fvDX+4tqagBI+uQhOJ2Sx6usHrAk3xsF9g6D+R+BWmT4hFeObfeTaQlza3JA9bPNux5CIpxm/RDCeZmmtU6k4LWuArtJvFg9otVpOlUXqCjLlV0VvE4bVUkPOp5BcByFERtw9+3WTydygZMn+UE/2e3lox0oT8cGBsbkpCR4TITTOJFvew== evgeniy@Evgeniy"
+
+apt_users_packages:
+  - git
+
+createfolder_list:
+  - /opt/docker/
+  - /opt/docker/volumes/nginx/conf.d
+  - /opt/docker/volumes/nginx/certs
+
+copydocker_list:
+  - { src: ../docker/docker-compose.yml, dest: /opt/docker/}
+
+master_app_image: ydjink/apptest:v1
+fucking_slave_app_image: ydjink/apptest:v1 ``

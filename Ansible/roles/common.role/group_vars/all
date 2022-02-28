@@ -1,0 +1,8 @@
+backup_install: false
+common_do_not_set_hostname_as_inventory: True
+users_admins:
+  - username: root
+    state: present
+    keys:
+      - state: present
+        key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC1dvFxtfG+kD0QycIbcZ53nt2cBWrElb2Cgq9AJ1IhLbyd1fVTuS5+2m9BLfhUFxQYqSI+6CoAvmrZIe8q4V93IXc9A3MHckzewLSqBRNHrZFjhW7dCsLrMjLDW1KbvLuNhB/k/rmafYSzjwBJusL8plXHjuAgo1b2aS++99QicW/7u6fvEm9092mGkdMSqzvXh7A6xx8ow3wF5K53y/0C4bVYlpZkM2AREl9kfRdI8M8E/fs7DpKei2glnBhXRd/rGD1ATf4KLLOsKI3KZ8WlQQU2FUxTaXZqxeaLQ3Q3Mwq+1mBjB8U7rC288EdvxsdBDudMYFE1La1/VqObeCtO6Msk730XryZGKIeVEDhp4DznxRg4ylmi63IS9yFD4N2GHLu5QQDJOfWCNOHCZOkcWWM2zM7fuMXZLSb+LeAle6P8ri1YAv7ZVCkVb78bXDUGZYTvEndA8VbIsxKckEGHTCtENDeUcsqnvcYBVWHJ/JG6zUjZ4rghWB6lKt78v7U= evgeniy@Evgeniy"

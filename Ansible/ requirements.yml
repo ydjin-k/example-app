@@ -1,0 +1,8 @@
+- src: git@git.adm.selectel.org:m/i/a/credentials.role.git
+  scm: git
+  version: master
+  path: ./roles
+- src: git@git.adm.selectel.org:m/i/a/docker-role.git
+  scm: git
+  version: master
+  path: ./roles

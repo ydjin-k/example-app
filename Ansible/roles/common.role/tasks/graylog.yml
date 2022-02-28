@@ -1,0 +1,36 @@
+---
+
+- name: Create syslog config
+  template:
+    src: graylog.j2
+    dest: "/etc/rsyslog.d/10-graylog.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart rsyslog
+  when: add_to_graylog is defined and add_to_graylog == True
+  tags: add_to_graylog
+
+- name: Copy filebeat deb file on server
+  copy:
+    src: filebeat-6.5.4-amd64.deb
+    dest: /root/filebeat-6.5.4-amd64.deb
+  tags: add_to_graylog
+
+- name: install filebeat deb package
+  apt: deb=/root/filebeat-6.5.4-amd64.deb
+  when: add_to_graylog is defined and add_to_graylog == True
+  tags: add_to_graylog
+
+- name: Create filebeat config
+  template:
+    src: filebeat.j2
+    dest: "/etc/filebeat/filebeat.yml"
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart filebeat
+  when: add_to_graylog is defined and add_to_graylog == True
+  tags:
+    - add_to_graylog
+    - create_filebeat_config

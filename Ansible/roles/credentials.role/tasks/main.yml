@@ -1,0 +1,48 @@
+---
+
+- include: "admin_keys.yml"
+  when:
+    - users_admins is defined
+    - users_admins is iterable
+    - users_allow is defined
+    - users_allow is iterable
+  tags:
+    - users
+
+- include: "selectel_ci.yml"
+  when:
+    - selectel_ci is defined
+    - selectel_ci is iterable
+    - selectel_ci_users == 'yes'
+  tags:
+    - users_ci
+
+# # Create/delete system users
+# - include: "system_users.yml"
+#   with_items: "{{ users_admins }}"
+#   tags:
+#     - users
+
+# # Install SSH pacakges
+# - include: "ssh.yml"
+#   tags:
+#     - users
+
+# # Update sudoers file
+# - include: "sudoers.yml"
+#   with_items: "{{ users_admins }}"
+#   tags:
+#     - users
+
+
+# - debug:
+#     msg: "{{ selectel_ci_users }}"
+#     # verbosity: 2
+#   tags:
+#     - users_ci
+
+# - debug:
+#     msg: "{{ selectel_ci }}"
+#     # verbosity: 2
+#   tags:
+#     - users_ci

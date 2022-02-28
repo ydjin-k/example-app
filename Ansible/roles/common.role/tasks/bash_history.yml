@@ -1,0 +1,34 @@
+---
+
+- name: Add history filesize
+  lineinfile: dest=/root/.bashrc line="HISTFILESIZE=1000000"
+
+- name: Add history limit
+  lineinfile: dest=/root/.bashrc line="HISTSIZE=1000000"
+
+- name: Add space and double command ignore
+  lineinfile: dest=/root/.bashrc line="HISTCONTROL=ignoreboth"
+
+- name: Add job control commands ignoring
+  lineinfile: dest=/root/.bashrc line="HISTIGNORE='ls:bg:fg:history'"
+
+- name: Add history format
+  lineinfile: dest=/root/.bashrc line="HISTTIMEFORMAT='%F %T '"
+
+- name: Touch cron file
+  file:
+    path: /root/.inputrc
+    state: touch
+
+- name: Add scroll through bash history
+  lineinfile: 
+    dest: /root/.inputrc
+    line: |
+      "\e[A": history-search-backward
+      "\e[B": history-search-forward
+  ignore_errors: "{{ ansible_check_mode }}"
+
+- name: Update shell env
+  shell: "bash -c 'shopt -s cmdhist histappend'"
+  changed_when: False
+

@@ -1,0 +1,31 @@
+---
+
+- name: Add/remove ssh pub keys for admins
+  when:
+    - users_admins is defined
+    - users_admins is iterable
+    - item.0.state == "present"
+    - not users_root_keys
+  with_subelements:
+    - "{{ users_admins }}"
+    - keys
+  authorized_key:
+    manage_dir: true
+    user: "{{ item.0.username }}"
+    key: "{{ item.1.key }}"
+    state: "{{ item.1.state }}"
+
+- name: Add/remove ssh keys to root user
+  when:
+    - users_admins is defined
+    - users_admins is iterable
+    - item.0.state == "present"
+    - users_root_keys
+  with_subelements:
+    - "{{ users_admins }}"
+    - keys
+  authorized_key:
+    manage_dir: true
+    user: "root"
+    key: "{{ item.1.key }}"
+    state: "{{ item.1.state }}"

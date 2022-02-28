@@ -1,0 +1,6 @@
+flask
+gunicorn
+coverage
+pytest
+blinker
+requests

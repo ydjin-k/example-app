@@ -1,0 +1,38 @@
+---
+
+- name: Create /var/log/iptables.log
+  copy:
+    content: ""
+    dest: /var/log/iptables.log
+    force: no
+    mode: 0640
+    owner: syslog
+    group: adm
+  when: ansible_os_family == 'Debian'
+
+- name: Create /var/log/iptables.log centos
+  copy:
+    content: ""
+    dest: /var/log/iptables.log
+    force: no
+    mode: 0640
+    owner: root
+    group: root
+  when: ansible_os_family == 'RedHat'
+
+- name: Copy rsyslog.conf
+  template:
+    src=rsyslog.conf.j2
+    dest=/etc/rsyslog.d/20-iptables.conf
+    owner=root
+    group=root
+    mode=0644
+  notify: Restart rsyslog
+
+- name: Copy logrotate conf.
+  template:
+    src=logrotate_iptables_logs.conf.j2
+    dest=/etc/logrotate.d/iptables
+    owner=root
+    group=root
+    mode=0644

@@ -1,0 +1,28 @@
+---
+
+- name: Update sudoer nopasswd {{ item.username }}
+  when:
+    - users_admins is defined
+    - users_admins is iterable
+    - not users_root_keys
+    - item.sudopass is not defined
+  lineinfile:
+    dest: "/etc/sudoers"
+    line: '{{ item.username }} ALL=(ALL) NOPASSWD: ALL'
+    regexp: '^{{ item.username }}'
+    state: "{{ item.state }}"
+    validate: 'visudo -cf %s'
+
+
+- name: Update sudoers passwd {{ item.username }}
+  when:
+    - users_admins is defined
+    - users_admins is iterable
+    - not users_root_keys
+    - item.sudopass is defined
+  lineinfile:
+    dest: "/etc/sudoers"
+    line: '{{ item.username }} ALL=(ALL) PASSWD: ALL'
+    regexp: '^{{ item.username }}'
+    state: "{{ item.state }}"
+    validate: 'visudo -cf %s'

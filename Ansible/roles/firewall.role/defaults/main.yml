@@ -1,0 +1,39 @@
+---
+
+firewall_ip_acl: []
+#  - "1.1.1.1"
+#  - "2.2.2.2"
+#  - "3.3.3.3"
+
+firewall_net_acl:
+  - "185.10.186.144/29"   # Managed services
+# - "172.24.1.0/24"       # internal project
+# - "4.4.4.4/12"
+# - "5.5.5.5/28"
+
+firewall_ip_blacklist: []
+
+firewall_net_blacklist: []
+
+firewall_main_ip_acl:
+  - "95.213.254.17"     # SelectelVPN
+  - "188.93.16.2"       # ЦВТ-1
+  - "188.93.16.50"      # ЦВТ-2
+  - "185.10.186.148"    # gitlab CI
+  - "31.28.12.69"       # Zhuravlev home
+# - "188.93.17.50"      # openvas
+# - "92.53.103.122"     # pmm-server, акк #68786
+
+firewall_external_network_interface: "eth0"
+firewall_synflood_ping_scan_protect: []
+####Количество разрешенных соединений для одного хоста.
+establ_connect_from_host: 80
+limit_per_sec: 60
+limit_burst: 20
+
+firewall_enabled_input_tcp_ports:
+  - "80"
+  - "443"
+  - "22"
+
+firewall_enabled_input_udp_ports: []

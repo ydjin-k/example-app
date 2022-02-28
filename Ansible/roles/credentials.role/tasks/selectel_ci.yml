@@ -1,0 +1,57 @@
+---
+
+- name: Add/remove {{ item.0.username }} with a password
+  when:
+    - selectel_ci is defined
+    - selectel_ci is iterable
+    - selectel_ci_users
+    # - item.0.password is defined
+  user:
+    name: "{{ item.0.username }}"
+    state: "{{ item.0.state }}"
+    password: "{{ item.0.password }}"
+    force: true
+    remove: true
+    system: false
+    createhome: true
+    groups: ''
+    append: true
+    shell: /bin/bash
+  loop: "{{ selectel_ci|subelements('keys') }}"
+
+- name: Fix perm. for homedir {{ item.0.username }}
+  when:
+    - item.0.state == "present"
+    - selectel_ci_users
+  file:
+    path: /home/{{ item.0.username }}
+    state: directory
+    mode: 0750
+  loop: "{{ selectel_ci|subelements('keys') }}"
+
+- name: Add/remove ssh pub keys for CI
+  when:
+    - selectel_ci is defined
+    - selectel_ci is iterable
+    - item.0.state == "present"
+    - selectel_ci_users
+  authorized_key:
+    manage_dir: true
+    user: "{{ item.0.username }}"
+    key: "{{ item.1.key }}"
+    state: "{{ item.1.state }}"
+  loop: "{{ selectel_ci|subelements('keys') }}"
+
+- name: Update sudoers passwd {{ item.0.username }}
+  when:
+    - selectel_ci is defined
+    - selectel_ci is iterable
+    - selectel_ci_users
+    # - item.0.sudopass is defined
+  lineinfile:
+    dest: "/etc/sudoers"
+    line: '{{ item.0.username }} ALL=(ALL) PASSWD: ALL'
+    regexp: '^{{ item.0.username }}'
+    state: "{{ item.0.state }}"
+    validate: 'visudo -cf %s'
+  loop: "{{ selectel_ci|subelements('keys') }}"

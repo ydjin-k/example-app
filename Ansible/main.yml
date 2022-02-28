@@ -1,0 +1,62 @@
+---
+- hosts:
+  - master
+  - fuckingslave
+
+  roles:
+   - { role: common.role, tags: common }
+   - { role: credentials.role, tags: credentials }
+   - { role: firewall.role, tags: firewall }
+   - { role: fail2ban.role, tags: fail2ban }
+   - { role: docker.role, tags: docker }
+
+  tasks:
+     - name: Copy docker
+       block:
+         - name: Create directory
+           file:
+             path: "{{ item }}"
+             state: directory
+             mode: 0660
+             recurse: yes
+           loop: "{{ createfolder_list }}"
+           when:
+             - createfolder_list is defined
+             - createfolder_list is iterable
+             - createfolder_list | length > 0
+
+     - name: Synchronize docker directories
+       synchronize:
+        src: "{{ item.src }}"
+        dest: "{{ item.dest }}"
+       loop: "{{ syncdocker_list }}"
+       when:
+            - syncdocker_list is defined
+            - syncdocker_list is iterable
+            - syncdocker_list | length > 0
+
+  tags: copydocker
+
+- hosts: master
+  tasks:
+    - name: create docker-compose 
+      ansible.builtin.template:
+        src: templates/docker-compose.j2
+        dest: /opt/docker/docker-compose.yml
+        owner: root
+        group: root
+        mode: '0640'
+      tags: create_dc_master
+
+- hosts: fuckingslave
+  tasks:
+    - name: create docker-compose 
+      ansible.builtin.template:
+        src: templates/docker-compose.j2
+        dest: /opt/docker/docker-compose.yml
+        owner: root
+        group: root
+        mode: '0640'
+      tags: create_dc_fucking_slave
+
+

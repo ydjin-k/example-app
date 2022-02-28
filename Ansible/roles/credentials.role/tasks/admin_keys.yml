@@ -1,0 +1,174 @@
+---
+### SYSTEM USERS
+
+# - name: "gather data from nodes"
+#   setup:
+
+# - name: "Show users_root_keys state"
+#  debug: var=hostvars[inventory_hostname].users_root_keys
+#
+# - name: "Show ansible_os_family"
+#  debug: var=hostvars[inventory_hostname].ansible_os_family
+
+- name: ubuntu
+  block:
+    - name: Add/remove without a password
+      when:
+        - users_admins is defined
+        - users_admins is iterable
+        - not users_root_keys
+        - item.0.password is not defined
+      user:
+        name: "{{ item.0.username }}"
+        state: "{% if item.0.username in users_allow %}{{ item.0.state }}{% else %}absent{% endif %}"
+        force: true
+        remove: true
+        system: false
+        createhome: true
+        groups: "adm,sudo"
+        append: true
+        shell: /bin/bash
+      loop: "{{ users_admins|subelements('keys') }}"
+
+    - name: Add/remove with a password
+      when:
+        - users_admins is defined
+        - users_admins is iterable
+        - not users_root_keys
+        - item.0.password is defined
+      user:
+        name: "{{ item.0.username }}"
+        state: "{% if item.0.username in users_allow %}{{ item.0.state }}{% else %}absent{% endif %}"
+        password: "{{ item.0.password }}"
+        force: true
+        remove: true
+        system: false
+        createhome: true
+        groups: "adm,sudo"
+        append: true
+        shell: /bin/bash
+      loop: "{{ users_admins|subelements('keys') }}"
+    - name: Allow 'sudo' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%sudo'
+        line: '%sudo ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+  when: ansible_os_family == 'Debian'
+
+- name: Centos
+  block:
+    - name: Add/remove without a password
+      when:
+        - users_admins is defined
+        - users_admins is iterable
+        - not users_root_keys
+        - item.0.password is not defined
+      user:
+        name: "{{ item.0.username }}"
+        state: "{% if item.0.username in users_allow %}{{ item.0.state }}{% else %}absent{% endif %}"
+        force: true
+        remove: true
+        system: false
+        createhome: true
+        groups: "adm,wheel"
+        append: true
+        shell: /bin/bash
+      loop: "{{ users_admins|subelements('keys') }}"
+
+    - name: Add/remove with a password
+      when:
+        - users_admins is defined
+        - users_admins is iterable
+        - not users_root_keys
+        - item.0.password is defined
+      user:
+        name: "{{ item.0.username }}"
+        state: "{% if item.0.username in users_allow %}{{ item.0.state }}{% else %}absent{% endif %}"
+        password: "{{ item.0.password }}"
+        force: true
+        remove: true
+        system: false
+        createhome: true
+        groups: "adm,wheel"
+        append: true
+        shell: /bin/bash
+      loop: "{{ users_admins|subelements('keys') }}"
+
+    - name: Allow 'wheel' group to have passwordless sudo
+      lineinfile:
+        dest: /etc/sudoers
+        state: present
+        regexp: '^%wheel'
+        line: '%wheel ALL=(ALL) NOPASSWD: ALL'
+        validate: visudo -cf %s
+  when: ansible_os_family == 'RedHat'
+
+- name: Fix perm. for homedir
+  when:
+    - item.0.state == "present"
+    - not users_root_keys
+    - item.0.username in users_allow
+  file:
+    path: /home/{{ item.0.username }}
+    state: directory
+    mode: 0750
+  loop: "{{ users_admins|subelements('keys') }}"
+
+### SSH
+- name: Add/remove ssh pub keys for admins
+  when:
+    - users_admins is defined
+    - users_admins is iterable
+    - item.0.state == "present"
+    - not users_root_keys
+    - item.0.username in users_allow
+  authorized_key:
+    manage_dir: true
+    user: "{{ item.0.username }}"
+    key: "{{ item.1.key }}"
+    state: "{% if item.0.username in users_allow %}{{ item.1.state }}{% else %}absent{% endif %}"
+  loop: "{{ users_admins|subelements('keys') }}"
+
+- name: Add/remove ssh keys to root user
+  when:
+    - users_admins is defined
+    - users_admins is iterable
+    - item.0.state == "present"
+    - users_root_keys
+  authorized_key:
+    manage_dir: true
+    user: "root"
+    key: "{{ item.1.key }}"
+    state: "{% if item.0.username in users_allow %}{{ item.1.state }}{% else %}absent{% endif %}"
+  loop: "{{ users_admins|subelements('keys') }}"
+
+### SUDOERS
+# - name: Update sudoer nopasswd
+#  when:
+#    - users_admins is defined
+#    - users_admins is iterable
+#    - not users_root_keys
+#    - item.0.sudopass is not defined
+#  lineinfile:
+#    dest: "/etc/sudoers"
+#    line: '{{ item.0.username }} ALL=(ALL) NOPASSWD: ALL'
+#    regexp: '^{{ item.0.username }}'
+#    state: "{% if item.0.username in users_allow %}{{ item.0.state }}{% else %}absent{% endif %}"
+#    validate: 'visudo -cf %s'
+#  loop: "{{ users_admins|subelements('keys') }}"
+
+- name: Update sudoers passwd
+  when:
+    - users_admins is defined
+    - users_admins is iterable
+    - not users_root_keys
+    - item.0.sudopass is defined
+  lineinfile:
+    dest: "/etc/sudoers"
+    line: '{{ item.0.username }} ALL=(ALL) PASSWD: ALL'
+    regexp: '^{{ item.0.username }}'
+    state: "{% if item.0.username in users_allow %}{{ item.0.state }}{% else %}absent{% endif %}"
+    validate: 'visudo -cf %s'
+  loop: "{{ users_admins|subelements('keys') }}"

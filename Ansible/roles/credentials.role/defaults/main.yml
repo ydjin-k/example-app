@@ -1,0 +1,140 @@
+---
+# True: install ssh keys to root user and not create system users, False: create admin users with own keys
+users_root_keys: false
+# True: create users selectelci with keys
+selectel_ci_users: true
+# users_admins: []
+
+vimrc:
+  - set: 'number'
+  - syntax: 'on'
+  - set: 'ignorecase'
+  - set: 'nocompatible'
+  - set: 'ruler'
+  - set: 'nowrap'
+  - set: 'expandtab'
+  - set: 'shiftwidth=2'
+  - set: 'softtabstop=2'
+  - set: 'tabstop=2'
+  - set: 'incsearch'
+  - set: 'history=200'
+  # - set: 'listchars=space:·'
+  # - set: 'list'
+  - set: 't_Co=256'
+  - set: 'background=dark'
+
+  - vmap: '<C-C> "+yi'
+  - imap: '<C-V> <esc> "+gPi'
+  - set: 'clipboard=unnamedplus'
+
+users_admins: []
+#   - username: vishnyakov
+#     state: present
+#     password: '$6$pn2n5X72$LQF/gfBHYtl2f0bvNIfWiShqeiXvkEsi2mGFH2GDes6AAaqfwropjPhZ/gqcJ6Ifm.KMVdagHa2VWUFHgOyd3.'
+#     keys:
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDh6Ssw0cTd5fLQZrKVYlS1Xnm6LbOCzzuorSwK4tR4QhOjGN1biO0U8w+wFq1peESuunnGLDQ0BTGo5COzPeeE0i1C66sgYqgYuxm05ILI1hDBObo70ZGKWsKFvj1z+9N8MCSJpBQuy/MTuk4TqtYFaZkjNDOstSJdAtCQGWLEDW3AzDOVuat4G4IpMMZMg+sq8uYCirLeKl4T/zgikCNScReJXtyh2d2YJ3yfbzjs5MwDZQBFzgLBfR0SX2vkspom8hjIHsqk8SjfWMAGA07N/nLx/bZqou/td085eLQNXkX+YDRAxNNGy8RPpMONcxuwbGbNdBwoYq3FdoikXc6r vma@nb-slctl-vma"
+#       - state: present
+#         key: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILea0/ulXy15h0MfGyKc9doZ8s8ELTwZmVifo3bDGrCu vma@selectel.ru"
+#   - username: kalinovskiy
+#     state: present
+#     password: '$6$s.ICW0YY$THaB.fw3NQGj257qg8LafWL1OOivoEcSTzNJhOeb1aCiQ6ubqpk05ZEUQB1DY23pfTiU/RwQz9lFd6svWDivh/'
+#     keys:
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC12uZq1K27UrwHwg8h5jNULbx89NEFLp+xmUKSnrQMkgHDwqlSButjreJrYpQSHpaUzacwaHaPoNdI9a5b8KUSPw72hfNlVeeQPFqh+yFO8RpkU4vNfkcCIXbtao7EdJ8xItVvXQE5A8D7YG1bSwApGuyEuDyblhF5LCtN23PddBB5t0mFLIaak1H9hVs6JKbXjffA5OItnzutx8qAujl/jbOYCwQVlJ3hQ5RNJpIwg/MeL2ueMofSl3Qvc2C9wie41AH946l3RwkgCgYX+biI83B+auwOFGY1crN7vNunok3VNHWHihgA52MkN+41Oj51twvRXoD1/ugFThLEsF5Z"
+#   - username: zhuravlev
+#     state: present
+#     password: '$6$dW/rPpFlAmd.KuL6$SnHnOqopHkUFWLvqSeOEswW12SX2k/hmNDXh22lX4FEcXJScfUgpIdz24W1Lt7G3iz.u3HnMrdLzxkVAGYrQO1'
+#     keys:
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0/mYXGdPKa6QP2z5IlRzw8dIiIB7qhG3gHM/SSqxNmTv0qGkYqd51554BgaLA4uIw9u+TEBnHlif4VNogKDpI6rAY2oSl4GxwYvV6g7T2onhKrYCexv6I7w0rU+QZE5I2b4+yw4UMvcENpQ2TaYCWx3WZWl9eLgvd868FGNriku8L8qed7+j+aRqKcH//FDVOV26gs68flYBA1wmenEtZYyK4qUbx3iSC97dPRpM2Sn/0rSQ28D7ovelMBIkmyGUC0KakGN4rqk3xKcONH5z3yZafWWBK+LPrxZ5E3axv2Pe10s5twVKIQIewSyP/bs7Fwvw+Mb3y7A/SOwfJXVjr"
+#   - username: shirshov
+#     state: present
+#     password: '$6$6EUH1AUrt/.bxi2K$vpKhiFLaxy60IBI6fiZAaDS4GnpEVMMEw3P4cxY.7i/81Tiwi8HaZ1qhn5LTtw.epkQK2WJjGg5cDTEcyPg8M/'
+#     keys:
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC90jNzDZp0WtRrlAi5MzDPYgDCxPr7hadacdRNtrN/vmtHFeXtyiSoUlGp9CRHVURX8ja8VCs0hgjm4WQw4CMpMkYjcNMyIUbPyxN6308BfmEcDHiVYJ9fnFHsjxIOs4LUsCof4FTI6eYJgNoMnLF7oAgAiAHP5fZqhfNB0yPU7SCwPUjFiSOzTd//SbdcoHj05EbtUFKixV/9nALRlSyRTXCXldO4pX6k3QcIy27d77IjToWf+W/Z6JQrKUdOutLjWN1RNV2uLsxaWhV6yC2VUF9lBC8qPQCvwMhqbfmpBb1yBDU/G+PCMo0mLCQtHl7OwSsAV1Qt67pMhtK9/0Pf shirshov@ts-thinkpad"
+#   - username: zhilyaev
+#     state: present
+#     password: '$6$bPKrt8HSpZg$IcX9eihpQPQdbD1ZVTzA1F9VbCRV7R3fzAS6A0DK/VDi8kuq35CMrFeIVlD4m88/iXu0/eMJXbV5aOFFynzjK0'
+#     keys:
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDp1coBw/J6c5tmKk5yMXrSr+00K7M/PC8EA0JmsRVSYtQATO/e8UHl6PWuWrIxHf4qcG7mvm8x9HtSZiLxhSlvy0MXZCBs59gYTgt7KBe4wyEsp+b2JbOPgx4cYNT0ri59RGLrJNsNmTONsfyA/WNvjKaHMidNlbKQmXczBK4MN2dcv+GpIa6cRztx5nb7cunDSK/PdZMMiQUYJ1V1eOrJp8PUa85W9ZLTES8pNZmr7iBWG6c0oB2AdPaPOL0lV4a30WxejOKAz1Z05i2PXoyjHUUf/dUlXLDSCGfU4lR7BQIZU+RPnMs/3ZarFFKu8SJpoE9xuQE5KwC+vtCdzZX7 diamon@diamon-ThinkPad-13"
+#   - username: prokofyev
+#     state: present
+#     password: '$6$UcsDOH1Le4W66cA$X8PrJ2QGoIeWtdvV82NA5pcuUh7m3q/2//1Hig98QHPZYPv1mB4dsNTaXdc05FpXuT/LqTqY1y5wYphFkk/I7.'
+#     keys:
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCz4A8bcNiUxFdRgFDKa6kpMbI3NPcOKoI3K0UqPeRqslp91H1SqiEusQF8+KHOyeyyfG0qNbeBbLpVSiJLyisdyJBIPlKh9GCEZo5RxveJM8y6LbaKrnq0qFthsrtbCSaqsiZ1LmZehfNGH3VvtqG88EpvYfijJPB6ycavX8t9wK1zp9QfAVXPZop45lRunS6nPnPffmnthS02RuJtXuiPBkPata0oGzQtcFRBc7Jq3coJ5uubS8VQInyjlG5EyTji8p0/bzUn+1/QYjyc1I+GNo6MKvNmPGSVX2mR0w83/lkGa5WP4xLbOrdjklsJWyiBUKr18T3UlncY0a1lmGIb laureldo@laureldo-thinkpad"
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDH1ku7eFWx87/UBTyftqSv8TJWmhnfEpqGIu3XBgXR/MpzVdYlkmOT4sF5WMYm1OqEh1+G9Yrk3msd0wRGt2Iiiw4+5in11pzbDuHd5bJYGkitu8XKgvbsaA/R+hgV/90u7K+aETdrrz4vLkvJmTZ19TcJmzIAljFWsuvbqOIjcLIwxJ9lrAUensJNv27J9W+DLpLKFqScg1nyn7pZRe4ByhlrDuS1Ti++LfIK1T5RRQbviauOy2XUahKBkkyhRZVmgrXcWVT3yDnBqZUhJYQ/TgIGE8BZx3fx8upjc8X73o4m19mCzAFuIy+5/BPy77L8kWRZlXU6QvO2z/5Ntg8/ ereinion@Catalina.local"
+
+
+# #### Interns ####
+#   - username: dokienko
+#     state: present
+#     password:
+#     keys:
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQC8plZBjbv0aPDEKyF3tz2aa1aQW01QbxMOSAVBQoJLyqR1QDZEJaXeX6ZXwV5rf33Z+JVAh5EpyyJM7d74hK7A6bVVx9eFEO9okiEY/sa7114s/Fyq17eJpQxq/oBXy2e5Ttm/EaXsAOPLmuDm8Zv97it9uVUKyY9ku4AjqST+m5ImC7Z3O6aofVafe3fqMUF4vaEM0dQ6r7hy6n4BWgRx6SXexYfvYrt6ZnZTvDVKwvD7aerq2Zj6O6gY/GqRAyk9q5TBl5S7vymGzfRh/ryhNwjzbS3FAD98GcbXAbRlBMAqAwCFlaQZS4TCkk4b6qa3Ty1YUOjgp9jBuoPDuTUxuuRos3t7ggTQxkYXihPoawgL/y2gxZRJUT9Dl/bZdmBVxs48yT4AFVpFb4P1XeGMdWUm/TSidft+Od2MjhhWWvCow8AlBW7BlJZuEMv/AaBwffd202jdzJR22HEytxrhj8JJqvRDJ+R/hv4+0HvMr7UlhJb8JSqLV8wcnBaGyDk= selectel@selectel-ThinkPad-E490"
+#   - username: bulanov
+#     state: present
+#     password:
+#     keys:
+#       - state: present
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDLkmqhn7Dm4LLVHO2EfxsNWcJcrhItKpl6lpgOq08KKos+cNI41FeVYycNkOBuGSnkKxqFhcDFitznqxRUzoBWM7EEM1sRCCTau+gB3J29b2x51Q8NNCrM1ebCyvBaR+vuMCrIBXD2hM4vU/Ljh7oEc1nY25XNTHxLXyASOXw+RcOG/ptFT836jztpsjkjpa/SbKMcxRCL+fjC71jyhDjeJ/gG4x2sh60RUhEHbH19UTqPbzjE1MbLUf5b/jegHYyUPtLM+lZzSX5fvAFNDXg8zMGRLsqMny+B/Vczjk9iXKC+vcvxEH4Jq09Sc6vadgMgKXOLjdSK+ovRpdgjr+YGy0PCZtqmNd+TTu+HHlYLDZ30rIXee4QvR8xaei1ZVixtftOPMOLl7wS12BbEs4+Lu1b81awd8TcBkj3gIZQzTw5l8ZbxQbj3OfYWePpmvpE9CZ7CCPPxHLYTwJfgl5afhSIl/K9ateTDfz60Eo7rEHu/Yg17BrfFeRfVGw6S0W2gbArru3Q4d6LH1drlpSfYBTJYPk0feS0iGc0r8ygR2R8ky+h6ssnDq/CCkLuobZ44oOUCY07FtnBlDbfuFtEQbuaZQSzP6+xcPHy/S5Od6sqrT2M+BQA0CwLOmYN+gyY8H4o0HJMm8ddA9sVw5CVdmc6qy7eL/WdKhlFonmGZqw== e_blanov@huepl.local"
+
+# #### Not active ####
+#   - username: beev
+#     state: absent
+#     password: '$6$wKTomlDjDox$W5Ea9DNXjdZjmLz9CJm1JuukD06m0LS3RHfjOV0N1e0K1C3jN6nJUQwz7vEdix8kkoEewiBf/SlAFpdE7Cjkb.'
+#     keys:
+#       - state: absent
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCt4Vt42HDSbMi2CYuZQpu1y5Dt918q2Gn5X2pa/9ddfjdgKl7c62fe97V1BUHl5Q0O1owtdJTbjQBTfwt54BNfFlY8vqOqQ5KClmXmpgltp7qkuEMdb9RhT+8M/cyF9kmvkhTP6ugUeoV3aJTKKsMSuKam/dRQFOvUXIktmCUBX44nxpgyjGwUEWghe5g89TWTGpj+ndW/PhXYcN4nvGLvtu+RDYXLtRDcnXu2ugCiIzmGDoNIl+aczLB7hLmJCakxxbTz+6a6GsNLS90BYEEIg6cPJW5Y6/HDezJ5jMojk0rC3EhMntc0h0puCB1qrTN2FRR9rJGSz1f5Fm7bhcVT selectel@selectel-ThinkPad-E480"
+#   # - username: nuralieva
+#   #   state: absent
+#   #   keys:
+#   #     - state: absent
+#   #       key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDLBtYmmUhnfbEDLl8OeYfWmYJG3s6BfRvrCm7K7Xdh2iEfHeYxqVHGLsDJAdqGL3tDCMKEy5ocpqkjDyLQWEtT8R7T7QVMmKIqZtKPckNRPs9yFQ6h9m9TZJ4UZfhLdkSZE0xOCBiNeQNs/Afl6Lwk2wFr78oqi5o1H+MIOv1Yyn77Ves0+nLFNXZd7czQTyFmODbPDkB0jkSPbvwF6XP5CZaMWBR2PKMp9oIT4agq5A9rl3+TZ81KUB05WF5MZSVME+kU05OUQN8lRNJwuPV6WiQ2KE5KLmRya6ufm8BRr6maZwU20ArjDJwT0j5ARODMHkQHu3MP2joNjJikDD/btcMD0G4/5/QoT+bupFdbx6ebqZm1+tUL3Qha6pj43TohC9RBo1M6nEI7RVj3yPz0XxWWe04goWb4+DxF2BketH74kklrBGDTMwOCRUb9b05dmKJjvA9tgurHQu97runTheoAOkjzV9jWING+h85JhVgmo09ko/jG532OPJanrY9prbVpGDvFzHvWLzKwWg986RTBrgnFqlf8g9Y3Q17mYKcj+L1OyA7BPVnbC+jS0Mi1rnrt1SCbaZmJXPYn2w7f4+keL83sNopN1IYPmRVXuHkMlEM6KDYlj+8fgpIaWWowX0Y5fXDTPHI+52z2LWbdipSb927g2F9CvHgN9OW7Hw== nuralieva@selectel.ru"
+#   # - username: lobanova
+#   #   state: absent
+#   #   keys:
+#   #     - state: absent
+#   #       key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC+wzLCuYKPAfw60a7X4VBGgtunNZ25VpRTtLVPNCGir1cq/NP+wQHf0H5UmziFgoFdTUrNe/fwVisY656pStHaGNAR2T903YLjSOmO5GjJa67+C/ybu0nMFYtmeqKwfEumXCunzjW94OuNXj4C6ypNGUTl9DCaHsZ7qXyioZAHufYc8ms9nc9KrhaMOZojbIrfgKl3lFALS2q6QG5ggPw4V7whF882CINLjQCzsJwIj8qiG2+cAlsTSurMgozqkGy0TsWkRoDlTU8FHANH6XSiR7JAWd8fU033HFzibqk6P5suECMG87McbYPcx6xqm1R+mWGlLBJ/9MZ3G9CV9DHP asya@asya-Aspire-V3-371"
+#   # - username: bodina
+#   #   state: absent
+#   #   keys:
+#   #     - state: absent
+#   #       key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC7WWcn+sfcvq655x+uT3++vUuPothWm/Fn3qSr4j8nDgBDJ/hlYEjkcvTsMGl9A4wRHB75Y3nHbKwlY1AXstwCxbfsHSRBLEbUi371ME02iAWIn8VFmOEzD08Oo0EMo9VGkLytAeHTKxV3JMOwG4q3tlgtJgi9vdRt2/cB4vSjv3shqZcvMeBSF/zryCQlqnN1iC9N5i5BhvmJQ2esv4Kb42MXDGb41PCzcDF6GpCfrdLYBkWkKFEltO1dtrBYGJYXWXSgn4KNPESzusAQpPyDmxA5Ldd8VMvP/Wg9LtgKWse7jyu1MW/xLD8OfjwE1QHZMnY2HBFC1cahAgFFsGPb kate@kate-Aspire-V3-371"
+
+# #### ALFRED KEY ####
+#   - username: alfredslctl
+#     state: absent
+#     password:
+#     keys:
+#       - state: absent
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQChKFUZn5nCxx+XD657R4Yyy6zCxF5cm25jNF7FzghJQQom0ZQQ/g9R8m/N/AsQ2mT3EYXjed1IYeaHAEIqnETesQm7d4cEkehAMkOttV2OILCa9lSwuywh9fQkr8Rz+/yGuuNr45evQcYA1jVbwGOC+7w+q4UBqG03MYuZ3+gaS0yhVnmMRUr04eC30WUkYFpE/HehNNs9Or15ss7nKZ7U+fNofYDtxYkxCr0F1mFkez3Fhp48wkZgFch3bymopaBQKIXBo4TbIesS6QJMNXqWmdBtDsCZLbr8FA3KFVyE9ZHIGReczP3+JtpEXbQ6rnmGB8XmzsQABEbQhWFz2ni1"
+#   - username: selectel
+#     state: absent
+#     password:
+#     keys:
+#       - state: absent
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQChKFUZn5nCxx+XD657R4Yyy6zCxF5cm25jNF7FzghJQQom0ZQQ/g9R8m/N/AsQ2mT3EYXjed1IYeaHAEIqnETesQm7d4cEkehAMkOttV2OILCa9lSwuywh9fQkr8Rz+/yGuuNr45evQcYA1jVbwGOC+7w+q4UBqG03MYuZ3+gaS0yhVnmMRUr04eC30WUkYFpE/HehNNs9Or15ss7nKZ7U+fNofYDtxYkxCr0F1mFkez3Fhp48wkZgFch3bymopaBQKIXBo4TbIesS6QJMNXqWmdBtDsCZLbr8FA3KFVyE9ZHIGReczP3+JtpEXbQ6rnmGB8XmzsQABEbQhWFz2ni1"
+
+# #### SUPPORT KEY ####
+#   - username: mingulov
+#     state: absent
+#     password:
+#     keys:
+#       - state: absent
+#         key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDEOyWVXICctt/1e4ju5/QtEzRu6E5p9192rG4NFc1CnS6GHgRtjTRS/R0F2V0r8ylLJzMyuh82Lv3J7Y3kayMVF37TpFEMctvyps2kKL9FT3ltbau1lRxfuhICZ3f5wvob06O+pXt2ZGatE4ej3T5Wxac/atCOBY90DHz3Wqdv49dxqtEAeBhUmQhxtI3HUb2OGek7MVBomdfOS+M6tZJQack6ftAJefi4F+9wqEF/Df359gVaIbQLtntGtdjSPbxFPY/CL92Dwdt/Lgu/7g79DCe9ASXOykHBEcyH4T+iFfJX8OhJNK0yK4E/gIZ8kFl10PO5YO0YNj0am9dn22LH selectel@endeavour"
+
+selectel_ci: []
+  # - username: selectelci
+  #   state: present
+  #   password: '$6$H2TWVmmf$yi897E5KxONm5NbS68CA9EF0vPg1Hs3ZcTxSE5cQCbfyLZJ950Y2NK/006zHoUe1X3eKKZcKW/0MJiadtXHQo/'
+  #   keys:
+  #     - state: present
+  #       key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDNsElHX72frWdNg1lwOT4sgQ6kZAdYAdIrAgv5BE0L+tNh9agYA5qb5YvlTTGEwHoKoiBQB725gXhoNpxowJLvBeK0H3H/haoRG3eBJ6EUGNCJiuY/wU4pFTcynN/WBnWexTPg5sJ6QQUyEXKKAxBwl4l5N5FB5+gbSE5yqRqXvZX66S1tFA739BmWJUxt7C88LrhlhRgLGzgv3hPtf7004Jqq5PFO83v5gV750krVkqkLaHrHjFArau02giOtPGvovz2r7f7V4Jfb0+nlIIcPT4AX2+vDGAsIqJYTK2H0vn0u7ob6B+b0NRNhji0H0R9l/i2u6Bxo//5CjQi4nc8Tmxpdm1XwGfrwGhcclf3rNe8fcXkRHJXU3Gql7t2xy1M6vezO6AxvC+mIMMkeCAzmDWkhBa9ntxMzCErrBm9ScgyW/ewPC5+G6LJS+wg6aH+Z+83jUok+J1ey+S/N7q/PioRL9wTA8HZdXfQgGw6B0PX46BeZESq0HJeCwsxM4BAl/zo1mg/tw3aMgOLg0eKAVu5Oc2FGpjjiq/VRpyKi3roMaRqRInqG91n1+4UhlmADMdRxxFAI7rgFMqWziTa1IU0K3N0UD5DP/y9WKm8SbQCdlNPX6P1oGPnFwl81u7xF0wPM5bfFLMVfN5tDafWAJfyNC4FlnhxP4xdEq9tkww== vma@slctl-nb-vma"
+  #     - state: present
+  #       key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQDNsElHX72frWdNg1lwOT4sgQ6kZAdYAdIrAgv5BE0L+tNh9agYA5qb5YvlTTGEwHoKoiBQB725gXhoNpxowJLvBeK0H3H/haoRG3eBJ6EUGNCJiuY/wU4pFTcynN/WBnWexTPg5sJ6QQUyEXKKAxBwl4l5N5FB5+gbSE5yqRqXvZX66S1tFA739BmWJUxt7C88LrhlhRgLGzgv3hPtf7004Jqq5PFO83v5gV750krVkqkLaHrHjFArau02giOtPGvovz2r7f7V4Jfb0+nlIIcPT4AX2+vDGAsIqJYTK2H0vn0u7ob6B+b0NRNhji0H0R9l/i2u6Bxo//5CjQi4nc8Tmxpdm1XwGfrwGhcclf3rNe8fcXkRHJXU3Gql7t2xy1M6vezO6AxvC+mIMMkeCAzmDWkhBa9ntxMzCErrBm9ScgyW/ewPC5+G6LJS+wg6aH+Z+83jUok+J1ey+S/N7q/PioRL9wTA8HZdXfQgGw6B0PX46BeZESq0HJeCwsxM4BAl/zo1mg/tw3aMgOLg0eKAVu5Oc2FGpjjiq/VRpyKi3roMaRqRInqG91n1+4UhlmADMdRxxFAI7rgFMqWziTa1IU0K3N0UD5DP/y9WKm8SbQCdlNPX6P1oGPnFwl81u7xF0wPM5bfFLMVfN5tDafWAJfyNC4FlnhxP4xdEq9tkww== vma@slctl-nb-vma"

@@ -1,0 +1,21 @@
+fail2ban_whitelist:
+  - "127.0.0.1/8"
+  - "95.213.254.17"     # SelectelVPN
+  - "188.93.16.2"       # ЦВТ-1
+  - "188.93.16.50"      # ЦВТ-2
+  - "185.10.186.144/29" # Managed services
+  # - "185.10.186.148"    # git.adm.selectel.org
+  # - "185.10.186.149"    # zbx.adm.selectel.org
+  # - "188.93.17.50"      #openvas
+  # - "92.53.103.122"     # pmm-server, акк #68786
+  #- "94.19.50.86"       # Prokofiev
+  #- "31.28.12.69"       # Zhuravlev
+
+fail2ban_services:
+  - name: "ssh"
+    comment: "SSH service"
+    enabled: True
+    port: 'ssh'
+    filter: 'sshd'
+    logpath: '/var/log/auth.log'
+    maxretry: 6
